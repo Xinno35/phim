@@ -1,0 +1,100 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+import { PlayIcon, SearchIcon } from "lucide-react";
+
+const movies = [
+  {
+    title: "Dragon Ball Super",
+    thumbnail: "https://i3.wp.com/www.hhdphim.com/wp-content/uploads/2018/09/Dragon-Ball-Super.jpg",
+    episodes: [
+      { title: "Tập 1", link: "#" },
+      { title: "Tập 2", link: "#" },
+      { title: "Tập 3", link: "#" }
+    ],
+  },
+  {
+    title: "Naruto Shippuden",
+    thumbnail: "https://i3.wp.com/www.hhdphim.com/wp-content/uploads/2017/04/Naruto-Shippuden.jpg",
+    episodes: [
+      { title: "Tập 1", link: "#" },
+      { title: "Tập 2", link: "#" },
+      { title: "Tập 3", link: "#" }
+    ],
+  },
+  {
+    title: "One Piece",
+    thumbnail: "https://i3.wp.com/www.hhdphim.com/wp-content/uploads/2019/10/One-Piece.jpg",
+    episodes: [
+      { title: "Tập 1", link: "#" },
+      { title: "Tập 2", link: "#" },
+      { title: "Tập 3", link: "#" }
+    ],
+  },
+];
+
+export default function MovieWebsite() {
+  const [search, setSearch] = useState("");
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleCommentSubmit = () => {
+    if (newComment.trim()) {
+      setComments([...comments, newComment]);
+      setNewComment("");
+    }
+  };
+
+  return (
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-center mb-4">Phim HHVV</h1>
+      <div className="flex gap-2 mb-4">
+        <Input
+          placeholder="Tìm kiếm phim..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Button><SearchIcon className="w-4 h-4" /></Button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {filteredMovies.map((movie, index) => (
+          <Card key={index} className="hover:scale-105 transition">
+            <img src={movie.thumbnail} alt={movie.title} className="rounded-t-2xl" />
+            <CardContent>
+              <h2 className="text-xl font-semibold mb-2">{movie.title}</h2>
+              <div className="space-y-2">
+                {movie.episodes.map((ep, epIndex) => (
+                  <Button key={epIndex} className="w-full" onClick={() => window.open(ep.link, '_blank')}>
+                    <PlayIcon className="w-4 h-4 mr-2" /> {ep.title}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-2">Bình luận</h2>
+        <Textarea
+          placeholder="Nhập bình luận..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+        />
+        <Button className="mt-2" onClick={handleCommentSubmit}>Gửi bình luận</Button>
+        <div className="mt-4 space-y-2">
+          {comments.map((comment, index) => (
+            <div key={index} className="p-2 bg-gray-100 rounded">
+              {comment}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
